@@ -170,6 +170,8 @@ def launch_simple(robotname,object_set,objectname):
 	#incompatible with the Qt resource editor...
 	#program.run()
 	#start the simulation
+	logger = simlog.SimLogger(weakref.proxy(sim),sim.log_state_fn,sim.log_contact_fn, saveheader=False)
+	logger.saveHeader(['loop_time', 'dt'])
 	visualization.add("world",world)
 	visualization.show()
 	t0 = time.time()
@@ -184,11 +186,16 @@ def launch_simple(robotname,object_set,objectname):
 				t_traj = min(1, max(0, (sim.getTime()-t_lift)/lift_traj_duration))
 				desired = se3.mul((so3.identity(), [0, 0, 0.10*t_traj]), xform)
 				send_moving_base_xform_PID(sim.controller(0), desired[0], desired[1])
+		if sim.getTime() > t_lift + lift_traj_duration:
+			if logger:
+				logger.close()
+				logger = None
 		visualization.lock()
 		sim.simulate(0.01)
 		sim.updateWorld()
 		visualization.unlock()
 		t1 = time.time()
+		if logger: logger.saveStep([t1-t0,0.01])
 		time.sleep(max(0.01-(t1-t0),0.001))
 		t0 = t1
 
