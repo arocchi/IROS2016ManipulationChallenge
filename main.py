@@ -174,10 +174,10 @@ def launch_simple(robotname,object_set,objectname):
 	logger.saveHeader(['loop_time', 'dt'])
 	visualization.add("world",world)
 	visualization.show()
-	t0 = time.time()
 	t_lift = 1.5
 	lift_traj_duration = 0.5
 	while visualization.shown():
+		t0 = time.time()
 		if sim.getTime() > t_lift:
 			if robotname == 'reflex_col':
 				desired = se3.mul((so3.identity(), [0, 0, 0.10]), xform)
@@ -197,7 +197,6 @@ def launch_simple(robotname,object_set,objectname):
 		t1 = time.time()
 		if logger: logger.saveStep([t1-t0,0.01])
 		time.sleep(max(0.01-(t1-t0),0.001))
-		t0 = t1
 
 import random
 try:
