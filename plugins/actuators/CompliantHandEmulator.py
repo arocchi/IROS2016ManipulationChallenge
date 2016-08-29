@@ -302,6 +302,7 @@ class CompliantHandEmulator(ActuatorEmulator):
         self.controller.setPIDCommand(qdes, dqdes, torque)
 
     def substep(self, dt):
+        return
         torque, qdes = self.output()
         #qdes = np.array(self.controller.getCommandedConfig())
         qdes[[self.q_to_t[d_id] for d_id in self.d_to_n]] = self.q_d_ref
