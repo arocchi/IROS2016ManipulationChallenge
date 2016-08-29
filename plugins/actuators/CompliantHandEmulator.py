@@ -49,6 +49,7 @@ class CompliantHandEmulator(ActuatorEmulator):
         self.tau_c = None           #
         self.f_a = np.array(self.a_dofs * [0.0])
         self.g_c = None             # we store here gravity compensation torques
+        self.q_u_ref = None
 
         for i in xrange(self.robot.numDrivers()):
             driver = self.robot.driver(i)
@@ -170,15 +171,15 @@ class CompliantHandEmulator(ActuatorEmulator):
 
         torque_m = len(self.m_to_u)*[0.0] # 0 offset
 
-        q_u_ref = self.q_u_rest + self.effort_scaling * (-E_inv + E_inv.dot(self.R.T).dot(R_E_inv_R_T_inv).dot(self.R).dot(E_inv)).dot(self.tau_c) + self.synergy_reduction * E_inv.dot(self.R.T).dot(R_E_inv_R_T_inv).dot(sigma)
+        self.q_u_ref = self.q_u_rest + self.effort_scaling * (-E_inv + E_inv.dot(self.R.T).dot(R_E_inv_R_T_inv).dot(self.R).dot(E_inv)).dot(self.tau_c) + self.synergy_reduction * E_inv.dot(self.R.T).dot(R_E_inv_R_T_inv).dot(sigma)
 
         torque[self.a_to_n] = torque_a # synergy actuators are affected by gravity
         torque[self.u_to_n] += torque_u # underactuated joints are emulated, no gravity
         torque[self.m_to_n] += torque_m # mimic joints are emulated, no gravity
 
         qdes = np.array(self.controller.getCommandedConfig())
-        qdes[[self.q_to_t[u_id] for u_id in self.u_to_n]] = q_u_ref
-        qdes[[self.q_to_t[m_id] for m_id in self.m_to_n]] = q_u_ref
+        qdes[[self.q_to_t[u_id] for u_id in self.u_to_n]] = self.q_u_ref
+        qdes[[self.q_to_t[m_id] for m_id in self.m_to_n]] = self.q_u_ref
         qdes[[self.q_to_t[a_id] for a_id in self.a_to_n]] = self.q_a_ref
         qdes[[self.q_to_t[d_id] for d_id in self.d_to_n]] = self.q_d_ref
 
