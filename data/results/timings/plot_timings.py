@@ -47,10 +47,11 @@ try:
     t_fig = figure(figsize=(8, 6))
     p = plot(vals1['time'], vals1['loop_time'], vals2['time'], vals2['loop_time'])
     title('Computation times')
-    legend(p, ('step CUHE', 'step regular'))
+    legend(p, ('CUHE', 'regular'), loc = 'best')
     xlabel('t [s]')
     ylabel('t [s]')
     tight_layout()
+    autoscale(tight=True)
     t_fig.savefig('timings_comp.eps', format='eps', transparent='true')
 
     print "rt factor", 0.01/np.mean(vals1['loop_time'])
