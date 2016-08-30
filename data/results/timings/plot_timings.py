@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import csv
-import sys
+import sys, traceback
 from collections import defaultdict
 import math
 import numpy as np
@@ -36,19 +36,25 @@ def parse_log(f):
 
     return vals
 
-fn = sys.argv[1]
-f = open(fn, 'r')
-vals = parse_log(f)
+fn1 = sys.argv[1]
+f1 = open(fn1, 'r')
+fn2 = sys.argv[2]
+f2 = open(fn2, 'r')
+vals1 = parse_log(f1)
+vals2 = parse_log(f2)
 
 try:
     t_fig = figure(figsize=(8, 6))
-    p = plot(vals['time'], vals['loop_time'])
+    p = plot(vals1['time'], vals1['loop_time'], vals2['time'], vals2['loop_time'])
     title('Computation times')
-    legend(p, ('dt'))
+    legend(p, ('step CUHE', 'step regular'))
     xlabel('t [s]')
     ylabel('t [s]')
     tight_layout()
-    t_fig.savefig('timings.eps', format='eps', transparent='true')
+    t_fig.savefig('timings_comp.eps', format='eps', transparent='true')
+
+    print "rt factor", 0.01/np.mean(vals1['loop_time'])
     show()
 except:
+    print traceback.format_exc()
     embed()
