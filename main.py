@@ -244,16 +244,33 @@ def launch_simple(robotname,object_set,objectname,use_box=False):
 		time.sleep(0.1)
 	return
 	"""
-	
+
+	wait_for_setup = 5.0
+	wait_after_lift = 10.0
 	#this code manually updates the visualization
 	vis.add("world",world)
 	vis.show()
 	t0 = time.time()
 	while vis.shown():
+		if sim.getTime() >= wait_for_setup \
+				and sim.getTime() <= wait_after_lift \
+				and not program.saveScreenshots:
+			program.saveScreenshots = True
+			program.nextScreenshotTime = sim.getTime()
+			print "Started recording"
+
+		if sim.getTime() >= wait_after_lift and program.saveScreenshots:
+			program.saveScreenshots = False
+			print "Stopped recording"
 		vis.lock()
 		sim.simulate(0.01)
 		sim.updateWorld()
+		if program.saveScreenshots and sim.getTime() >= program.nextScreenshotTime:
+			program.save_screen("image%04d.ppm" % (program.screenshotCount))
+			program.screenshotCount += 1
+			program.nextScreenshotTime += 1.0 / 30.0;
 		vis.unlock()
+
 		t1 = time.time()
 		time.sleep(max(0.01-(t1-t0),0.001))
 		t0 = t1
@@ -505,7 +522,7 @@ if __name__ == '__main__':
 		dataset = random.choice(objects.keys())
 
 	#choose the robot model here
-	robot = "soft_hand"
+	robot = "reflex_col"
 	#choose the setup here
 	if dataset == 'balls':
 		try:
