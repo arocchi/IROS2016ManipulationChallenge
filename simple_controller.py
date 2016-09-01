@@ -60,12 +60,12 @@ def make(sim,hand,dt):
 		if sim.getTime() > t_lift:
 			#the controller sends a command to the base after 1 s to lift the object
 			if is_reflex_col:
+				desired = se3.mul((so3.identity(), [0, 0, 0.10]), xform)
+				send_moving_base_xform_linear(controller, desired[0], desired[1], lift_traj_duration)
+			else:
 				t_traj = min(1, max(0, (sim.getTime()-t_lift)/lift_traj_duration))
 				desired = se3.mul((so3.identity(), [0, 0, 0.10*t_traj]), xform)
 				send_moving_base_xform_PID(controller,desired[0],desired[1])
-			else:
-				desired = se3.mul((so3.identity(),[0,0,0.10]),xform)
-				send_moving_base_xform_linear(controller,desired[0],desired[1],lift_traj_duration)
 		#need to manually call the hand emulator
 		hand.process({},dt)
 	return controlfunc
