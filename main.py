@@ -171,14 +171,14 @@ def launch_simple(robotname,object_set,objectname):
 
 	if robotname in ['reflex_col', 'reflex']:
 		# send a command to the hand: f1,f2,f3,preshape
-		hand.setCommand([0.2, 0.2, 0.2, 0])
+		hand.setCommand([0, 0, 0, 0])
 	elif robotname == 'soft_hand':
 		# send a command to the hand: synergy
 		hand.setCommand([0.8])
 
 	t_lift = 1.5
 	lift_traj_duration = 0.5
-	wait_after_start = 5.0
+	wait_after_start = 2.5
 	t0 = time.time()
 
 	program.saveScreenshots = True
