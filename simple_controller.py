@@ -33,6 +33,9 @@ def make(sim,hand,dt):
 	sim.updateWorld()
 	xform = get_moving_base_xform(sim.controller(0).model())
 
+	wait_for_setup = 10.0
+	wait_after_lift = 15.0
+
 	def controlfunc(controller):
 		"""Place your code here... for a more sophisticated controller you could also create a class where the control loop goes in the __call__ method."""
 		if not is_soft_hand:
@@ -48,14 +51,23 @@ def make(sim,hand,dt):
 			except:
 				pass
 
-		if sim.getTime() < 0.05:
+
+		if sim.getTime() >= wait_for_setup and not hand.saveScreenshots:
+			hand.saveScreenshots = True
+			print "Started recording"
+
+		if sim.getTime() >= wait_after_lift  and hand.saveScreenshots:
+			hand.saveScreenshots = False
+			print "Stopped recording"
+
+		if sim.getTime() < wait_for_setup + 0.05:
 			if is_soft_hand:
 				hand.setCommand([0.8])
 			else:
 				#the controller sends a command to the hand: f1,f2,f3,preshape
 				hand.setCommand([0.2,0.2,0.2,0])
 
-		t_lift = 1
+		t_lift = wait_for_setup + 1
 		lift_traj_duration = 0.5
 		if sim.getTime() > t_lift:
 			#the controller sends a command to the base after 1 s to lift the object
