@@ -245,7 +245,7 @@ def launch_simple(robotname,object_set,objectname,use_box=False):
 	return
 	"""
 
-	wait_for_setup = 5.0
+	wait_for_setup = 7.5
 	wait_after_lift = 2.5
 
 	#this code manually updates the visualization
