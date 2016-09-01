@@ -159,22 +159,32 @@ def launch_simple(robotname,object_set,objectname):
 	for l in range(world.numRigidObjects()):
 		sim.body(world.rigidObject(l)).setCollisionPreshrink(visPreshrink)
 
-	if robotname in ['reflex_col', 'reflex']:
-		#send a command to the hand: f1,f2,f3,preshape
-		hand.setCommand([0.2,0.2,0.2,0])
-	elif robotname == 'soft_hand':
-		#send a command to the hand: synergy
-		hand.setCommand([0.8])
-
 	#By running this program you get a little more control over the simulation run, but it is
 	#incompatible with the Qt resource editor...
 	#program.run()
 	#start the simulation
 	visualization.add("world",world)
 	visualization.show()
-	t0 = time.time()
+
+	print "waiting for the user to prepare for recording"
+	time.sleep(10)
+
+	if robotname in ['reflex_col', 'reflex']:
+		# send a command to the hand: f1,f2,f3,preshape
+		hand.setCommand([0.2, 0.2, 0.2, 0])
+	elif robotname == 'soft_hand':
+		# send a command to the hand: synergy
+		hand.setCommand([0.8])
+
 	t_lift = 1.5
 	lift_traj_duration = 0.5
+	wait_after_start = 5.0
+	t0 = time.time()
+
+	program.saveScreenshots = True
+	program.nextScreenshotTime = sim.getTime()
+	print "Started recording"
+
 	while visualization.shown():
 		if sim.getTime() > t_lift:
 			if robotname == 'reflex_col':
@@ -184,9 +194,20 @@ def launch_simple(robotname,object_set,objectname):
 				t_traj = min(1, max(0, (sim.getTime()-t_lift)/lift_traj_duration))
 				desired = se3.mul((so3.identity(), [0, 0, 0.10*t_traj]), xform)
 				send_moving_base_xform_PID(sim.controller(0), desired[0], desired[1])
+
+		if sim.getTime() >= wait_after_start and program.saveScreenshots:
+			program.saveScreenshots = False
+			print "Stopped recording"
+
 		visualization.lock()
 		sim.simulate(0.01)
 		sim.updateWorld()
+
+		if program.saveScreenshots and sim.getTime() >= program.nextScreenshotTime:
+			program.save_screen("image%04d.ppm" % (program.screenshotCount))
+			program.screenshotCount += 1
+			program.nextScreenshotTime += 1.0 / 30.0;
+
 		visualization.unlock()
 		t1 = time.time()
 		time.sleep(max(0.01-(t1-t0),0.001))
