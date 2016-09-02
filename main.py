@@ -60,7 +60,10 @@ def make_object(object_set,objectname,world):
 	spacing = 0.005
 	T = (T[0],vectorops.add(T[1],(-(bmin[0]+bmax[0])*0.5,-(bmin[1]+bmax[1])*0.5,-bmin[2]+spacing)))
 	obj.setTransform(*T)
-	obj.appearance().setColor(0.2,0.5,0.7,1.0)
+	obj.appearance().setColor(0.2,0.5,	0.7,1.0)
+	contact_params = obj.getContactParameters()
+	contact_params.kFriction *= 1.3
+	obj.setContactParameters(contact_params)
 	return obj
 
 def make_moving_base_robot(robotname,world):
@@ -174,11 +177,11 @@ def launch_simple(robotname,object_set,objectname):
 		hand.setCommand([0, 0, 0, 0])
 	elif robotname == 'soft_hand':
 		# send a command to the hand: synergy
-		hand.setCommand([0.8])
+		hand.setCommand([1.0])
 
 	t_lift = 1.5
-	lift_traj_duration = 0.5
-	wait_after_start = 2.5
+	lift_traj_duration = 1.0
+	wait_after_start = 3.5
 	t0 = time.time()
 
 	program.saveScreenshots = True

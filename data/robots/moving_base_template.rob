@@ -12,7 +12,7 @@ qMin -1 -1 -1  -inf -inf -inf
 qMax  1  1  1   inf  inf  inf 
 q 0 0 0 0 0 0 
 geometry   ""   ""   ""   ""    ""    "data/objects/cube.tri"
-geomscale 1 1 1 1 1 0.01
+geomscale 1 1 1 1 1 0.0001
 mass       0.1 0.1 0.1 0.1 0.1 0.1
 com 0 0 0   0 0 0   0 0 0   0 0 0   0 0 0   0 0 0   
 inertia 0.001 0 0 0 0.001 0 0 0 0.001 \
