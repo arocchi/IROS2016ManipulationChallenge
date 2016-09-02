@@ -98,9 +98,9 @@ driver normal 18
                                                                                                                                                                             
                                                                                                                                                                             
 #for separated normal links
-servoP          5   5     2     5     2     5     2     25  25  25
-servoI          0   0     0     0     0     0     0     5   5   5
-servoD          0.5 0     0     0     0     0     0     0   0   0
+servoP          5   5     2     5     2     5     2     25   25   25
+servoI          0   0     0     0     0     0     0     0.25 0.25 0.25
+servoD          0.5 0     0     0     0     0     0     2.5  2.5  2.5
 
 dryFriction     0.1 0.001 0.001 0.001 0.001 0.001 0.001 0.5 0.5 0.5
 viscousFriction 0.5 0.5   0.5   0.5   0.5   0.5   0.5   0.1 0.1 0.1

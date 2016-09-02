@@ -246,14 +246,18 @@ def launch_simple(robotname,object_set,objectname,use_box=False):
 	"""
 
 	wait_for_setup = 5.0
-	wait_after_lift = 10.0
+	wait_after_lift = 2.5
+
 	#this code manually updates the visualization
 	vis.add("world",world)
 	vis.show()
+
+	print "waiting for the user to setup viewport"
+	time.sleep(wait_for_setup)
+
 	t0 = time.time()
 	while vis.shown():
-		if sim.getTime() >= wait_for_setup \
-				and sim.getTime() <= wait_after_lift \
+		if sim.getTime() <= wait_after_lift \
 				and not program.saveScreenshots:
 			program.saveScreenshots = True
 			program.nextScreenshotTime = sim.getTime()
@@ -522,7 +526,7 @@ if __name__ == '__main__':
 		dataset = random.choice(objects.keys())
 
 	#choose the robot model here
-	robot = "reflex_col"
+	robot = "reflex"
 	#choose the setup here
 	if dataset == 'balls':
 		try:

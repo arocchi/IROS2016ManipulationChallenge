@@ -177,7 +177,7 @@ class CompliantHandEmulator(ActuatorEmulator):
         torque[self.u_to_n] += torque_u # underactuated joints are emulated, no gravity
         torque[self.m_to_n] += torque_m # mimic joints are emulated, no gravity
 
-        qdes = np.array(self.sim.getActualConfig(self.robotindex))
+        qdes = np.array(self.controller.getCommandedConfig())
         qdes[[self.q_to_t[u_id] for u_id in self.u_to_n]] = q_u_ref
         qdes[[self.q_to_t[m_id] for m_id in self.m_to_n]] = q_u_ref
         qdes[[self.q_to_t[a_id] for a_id in self.a_to_n]] = self.q_a_ref
@@ -298,14 +298,16 @@ class CompliantHandEmulator(ActuatorEmulator):
                 pass
 
         torque, qdes = self.output()
-        dqdes = self.sim.getActualVelocity(self.robotindex)
+        #dqdes = self.sim.getActualVelocity(self.robotindex)
+        dqdes = self.controller.getCommandedVelocity()
         self.controller.setPIDCommand(qdes, dqdes, torque)
 
     def substep(self, dt):
         torque, qdes = self.output()
         #qdes = np.array(self.sim.getActualConfig(self.robotindex))
         qdes[[self.q_to_t[d_id] for d_id in self.d_to_n]] = self.q_d_ref
-        dqdes = self.sim.getActualVelocity(self.robotindex)
+        #dqdes = self.sim.getActualVelocity(self.robotindex)
+        dqdes = self.controller.getCommandedVelocity()
         self.controller.setPIDCommand(qdes, dqdes, torque)
 
 
