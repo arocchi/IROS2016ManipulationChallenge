@@ -526,7 +526,7 @@ if __name__ == '__main__':
 		dataset = random.choice(objects.keys())
 
 	#choose the robot model here
-	robot = "reflex"
+	robot = "soft_hand"
 	#choose the setup here
 	if dataset == 'balls':
 		try:
